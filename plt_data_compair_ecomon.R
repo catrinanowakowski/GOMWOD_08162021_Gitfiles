@@ -49,6 +49,66 @@ summary(lm(data = df[df$depth_bin == 250, ], BT~Temperature)) #r2: .94 n: 98
 
 # nrow(df[df$depth_bin == 100, ])
 
+library(mgcv)
+depth <- 50
+y = df$ST[df$depth_bin == depth]
+time = df$time[df$depth_bin == depth]
+month = df$month[df$depth_bin == depth]
+Temp <- df$Temperature[df$depth_bin == depth]
+gam_y <- gam(y ~ s(time, k = 4) + s(month, k = 4) + s(Temp, k = 4), method = "REML")
+# gam_y <- gam(y ~ s(Temp, k = 4), method = "REML")
+# gam_y <- gam(y ~ s(time, k = 4) + s(month, k = 4) , method = "REML")
+
+y_fit <- predict(gam_y, data.frame(time = WOD$time[WOD$depth_bin == depth], 
+                                   month = WOD$month[WOD$depth_bin == depth], 
+                                   Temp = WOD$Temperature[WOD$depth_bin == depth]))
+
+ggplot() +
+  geom_point(aes(x = time, y = y)) +
+  geom_line(aes(x = time, y = y)) +
+  geom_point(aes(x = WOD$time[WOD$depth_bin == depth], y = y_fit), color = "red") +
+  geom_line(aes(x = WOD$time[WOD$depth_bin == depth], y = y_fit), color = "red") +
+  theme_bw()
+   
+# plot(time,y, type = "l")
+# points(time,y, col = "black")
+# points(WOD$time[WOD$depth_bin == depth],y_fit, col = "red")
+
+summary(gam_y)
+plot(gam_y)
+
+ST <- y_fit
+
+##################################################
+library(mgcv)
+depth <- 200
+y = df$BT[df$depth_bin == depth]
+time = df$time[df$depth_bin == depth]
+month = df$month[df$depth_bin == depth]
+Temp <- df$Temperature[df$depth_bin == depth]
+gam_y <- gam(y ~ s(time, k = 4) + s(month, k = 4) + s(Temp, k = 4), method = "REML")
+# gam_y <- gam(y ~ s(Temp, k = 4), method = "REML")
+# gam_y <- gam(y ~ s(time, k = 4) + s(month, k = 4) , method = "REML")
+
+y_fit <- predict(gam_y, data.frame(time = WOD$time[WOD$depth_bin == depth], 
+                                   month = WOD$month[WOD$depth_bin == depth], 
+                                   Temp = WOD$Temperature[WOD$depth_bin == depth]))
+
+ggplot() +
+  geom_point(aes(x = time, y = y)) +
+  geom_line(aes(x = time, y = y)) +
+  geom_point(aes(x = WOD$time[WOD$depth_bin == depth], y = y_fit), color = "red") +
+  geom_line(aes(x = WOD$time[WOD$depth_bin == depth], y = y_fit), color = "red") +
+  theme_bw()
+
+# plot(time,y, type = "l")
+# points(time,y, col = "black")
+# points(WOD$time[WOD$depth_bin == depth],y_fit, col = "red")
+
+summary(gam_y)
+plot(gam_y)
+
+BT <- y_fit
 
 ################################################################################
 ## Plot the bottom depths
@@ -115,6 +175,37 @@ summary(lm(data = df[df$depth_bin == 200, ], BS~Salinity)) #r2: .23  n:
 summary(lm(data = df[df$depth_bin == 250, ], BS~Salinity)) #r2: .34  n: 
 
 
+##################################################
+library(mgcv)
+depth <- 200
+y = df$BS[df$depth_bin == depth]
+time = df$time[df$depth_bin == depth]
+month = df$month[df$depth_bin == depth]
+Sal <- df$Temperature[df$depth_bin == depth]
+gam_y <- gam(y ~ s(time, k = 4) + s(month, k = 4) + s(Sal, k = 4), method = "REML")
+# gam_y <- gam(y ~ s(Temp, k = 4), method = "REML")
+# gam_y <- gam(y ~ s(time, k = 4) + s(month, k = 4) , method = "REML")
+
+y_fit <- predict(gam_y, data.frame(time = WOD$time[WOD$depth_bin == depth], 
+                                   month = WOD$month[WOD$depth_bin == depth], 
+                                   Sal = WOD$Salinity[WOD$depth_bin == depth]))
+
+ggplot() +
+  geom_point(aes(x = time, y = y)) +
+  geom_line(aes(x = time, y = y)) +
+  geom_point(aes(x = WOD$time[WOD$depth_bin == depth], y = y_fit), color = "red") +
+  geom_line(aes(x = WOD$time[WOD$depth_bin == depth], y = y_fit), color = "red") +
+  theme_bw()
+
+# plot(time,y, type = "l")
+# points(time,y, col = "black")
+# points(WOD$time[WOD$depth_bin == depth],y_fit, col = "red")
+
+summary(gam_y)
+plot(gam_y)
+
+
+
 ################################################################################
 ## Plot the bottom depths
 
@@ -146,4 +237,7 @@ plt_250 <- ggplot() +
 
 
 grid.arrange(plt_50, plt_100, plt_150, plt_200, plt_250, ncol = 1)
+
+
+
 
