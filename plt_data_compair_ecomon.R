@@ -2,17 +2,22 @@ library(ggplot2)
 library(gridExtra)
 
 ## Load WOD and the Ecomon data
-WOD <- read.csv("C:/Users/catri/OneDrive/Documents/Bio/home/Chapter_One_2021/data/WOD/GOMWOD_08162021/WODGOM_formatted_CN_2021-08-18.csv", header = TRUE, stringsAsFactors = FALSE)
-ECOMON <- read.csv("C:/Users/catri/OneDrive/Documents/Bio/home/Chapter_One_2021/ecomon_sum_data.csv")
+WOD <- read.csv("C:/Users/catri/OneDrive/Documents/Bio/home/Chapter_One_2021/data/WOD/GOMWOD_08162021/GOMWOD_08162021_Gitfiles/WODGOM_formatted_CN_2021-08-18.csv", header = TRUE, stringsAsFactors = FALSE)
+# ECOMON <- read.csv("C:/Users/catri/OneDrive/Documents/Bio/home/Chapter_One_2021/ecomon_sum_data.csv") ## cope_compact
+ECOMON <- read.csv("C:/Users/catri/OneDrive/Documents/Bio/home/Chapter_One_2021/og_ecomon_data.csv") ## original values (no interpolation)
 
 
 WOD$time <- round((WOD$year + ((WOD$month-1)/12)), digits = 3)
-ECOMON$time <- round(ECOMON$time, digits = 3)
-drops <- c("X")
+ECOMON$time <- round((ECOMON$year + ((ECOMON$month-1)/12)), digits = 3)
+
+
+drops <- c("X", "date")
 WOD <- WOD[,!names(WOD)%in%drops]
 ECOMON <- ECOMON[,!names(ECOMON)%in%drops]
+names(ECOMON) <- c("year", "month", "BT", "ST", "BS", "SS", "time")
 
-df <- merge(WOD, ECOMON, by = c("time"), all =TRUE)
+
+df <- merge(WOD, ECOMON, by = c("time", "year", "month"), all =TRUE)
 
 df <- df[!is.na(df$Temperature),]
 df <- df[!is.na(df$BT),]
@@ -36,10 +41,13 @@ plt_250 <- ggplot() +
 grid.arrange(plt_S, plt_150, plt_200, plt_250)
 
 
-summary(lm(data = df[df$depth_bin == 50 , ], BT~Temperature)) #r2: .86  n: 301
-summary(lm(data = df[df$depth_bin == 150, ], BT~Temperature)) #r2: .79  n: 292
-summary(lm(data = df[df$depth_bin == 200, ], BT~Temperature)) #r2: .82  n: 280
-summary(lm(data = df[df$depth_bin == 250, ], BT~Temperature)) #r2: .89  n: 184
+summary(lm(data = df[df$depth_bin == 50 , ], BT~Temperature)) #r2: .99  n: 118
+summary(lm(data = df[df$depth_bin == 100, ], BT~Temperature)) #r2: .35  n: 118
+summary(lm(data = df[df$depth_bin == 150, ], BT~Temperature)) #r2: .75  n: 118
+summary(lm(data = df[df$depth_bin == 200, ], BT~Temperature)) #r2: .72  n: 116
+summary(lm(data = df[df$depth_bin == 250, ], BT~Temperature)) #r2: .94 n: 98
+
+# nrow(df[df$depth_bin == 100, ])
 
 
 ################################################################################
@@ -101,10 +109,10 @@ plt_250 <- ggplot() +
 grid.arrange(plt_S, plt_150, plt_200, plt_250)
 
 
-summary(lm(data = df[df$depth_bin == 50 , ], SS~Salinity)) #r2: .32  n: 301
-summary(lm(data = df[df$depth_bin == 150, ], BS~Salinity)) #r2: .30  n: 292
-summary(lm(data = df[df$depth_bin == 200, ], BS~Salinity)) #r2: .30  n: 280
-summary(lm(data = df[df$depth_bin == 250, ], BS~Salinity)) #r2: .31  n: 184
+summary(lm(data = df[df$depth_bin == 50 , ], SS~Salinity)) #r2: .28  n: 
+summary(lm(data = df[df$depth_bin == 150, ], BS~Salinity)) #r2: .26  n: 
+summary(lm(data = df[df$depth_bin == 200, ], BS~Salinity)) #r2: .23  n: 
+summary(lm(data = df[df$depth_bin == 250, ], BS~Salinity)) #r2: .34  n: 
 
 
 ################################################################################
