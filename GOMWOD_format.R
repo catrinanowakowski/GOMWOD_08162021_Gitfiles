@@ -35,7 +35,7 @@ stations <- unique(data[,c("time","lat","lon")])
 
 #################################################################################
 ## Getting the data that is inside the GOM:
-ECOMON <- read.csv("ECOMON_spatial_data.csv", header = TRUE, stringsAsFactors = FALSE)
+ECOMON <- read.csv("C:/Users/catri/OneDrive/Documents/Bio/home/Chapter_One_2021/data/WOD/GOMWOD_08162021/GOMWOD_08162021_Gitfiles/ECOMON_spatial_data.csv", header = TRUE, stringsAsFactors = FALSE)
 
 ECOMON_GOM <- ECOMON[ECOMON$region ==4,]
 # map('world', xlim = c(-72, -65), ylim = c(41,45)); map.axes()
@@ -100,9 +100,12 @@ GOMWOD_loc <- GOMWOD_loc[point.in.polygon(point.x = GOMWOD_loc$lon, point.y = GO
 GOMWOD_data <- merge(data, GOMWOD_loc, by = c("time", "lat", "lon"), all = FALSE)
 
 ## Check 
-# map('world', xlim = c(-72, -65), ylim = c(41,45)); map.axes()
-# points(GOMWOD_data$lon, GOMWOD_data$lat, pch=16)
+map('world', xlim = c(-72, -65), ylim = c(41,45)); map.axes()
+points(GOMWOD_data$lon, GOMWOD_data$lat, pch=16)
 
+################################################################################
+## Cut GOM in half
+GOMWOD_data <- GOMWOD_data[GOMWOD_data$lon > -68.5,]
 
 ################################################################################
 ## Convert pressure to depth 
@@ -173,7 +176,7 @@ ggplot() +
   geom_line(data = GOMWOD_fmt[GOMWOD_fmt$depth_bin == 150,], aes(x = time, y = Temperature, color = as.factor(depth_bin)), size = 1) +
   theme_bw()
 
-write.csv(GOMWOD_fmt, paste0("C:/Users/catri/OneDrive/Documents/Bio/home/Chapter_One_2021/data/WOD/GOMWOD_08162021", "/WODGOM_formatted_CN_",Sys.Date(), ".csv"))
+write.csv(GOMWOD_fmt, paste0("C:/Users/catri/OneDrive/Documents/Bio/home/Chapter_One_2021/data/WOD/GOMWOD_08162021", "/WODGOM_East_formatted_CN_",Sys.Date(), ".csv"))
 
 ################################################################################
 ################################################################################
